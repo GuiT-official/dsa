@@ -22,9 +22,19 @@ for b in range(B):
     mediana_b = np.median(amostra_bootstrap)
     medianas_bootstrap_Y.append(mediana_b)
 
+# Bootstrap para a diferença das medianas
+diferencas = []
+for b in range(B):
+    amostra_X = np.random.choice(X, size=len(X), replace=True)
+    amostra_Y = np.random.choice(Y, size=len(Y), replace=True)
+    dif = np.median(amostra_Y) - np.median(amostra_X)
+    diferencas.append(dif)
+
 # Resultados
 erro_padrao_X = np.std(medianas_bootstrap_X, ddof=1)
 erro_padrao_Y = np.std(medianas_bootstrap_Y, ddof=1)
+# IC 90% para a diferença (percentil bootstrap)
+ic_90_diff = np.percentile(diferencas, [5, 95])
 
 print("Resultados para X:")
 print(f"Mediana original: {np.median(X):.2f}")
@@ -37,3 +47,6 @@ print(f"Mediana original: {np.median(Y):.2f}")
 print(f"Erro padrão bootstrap: {erro_padrao_Y:.4f}")
 print(f"5º percentil: {np.percentile(medianas_bootstrap_Y, 5):.2f}")
 print(f"95º percentil: {np.percentile(medianas_bootstrap_Y, 95):.2f}")
+
+print("\nIntervalo de Confiança 90% para m_Y - m_X:")
+print(f"[{ic_90_diff[0]:.2f}, {ic_90_diff[1]:.2f}]")
